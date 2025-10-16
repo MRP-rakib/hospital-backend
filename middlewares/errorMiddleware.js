@@ -5,8 +5,10 @@ const notFoundErrorHandelar =(_req,_res,next)=>{
 }
 
 const errorMiddleware=(err,_req,res,_next)=>{
-    if(err.status)return res.status(err.status).json({message:err.message})
-        res.status(500).json({message:'something went wrong'})
+    const statusCode = err.status || 500; // use error's status if set, otherwise 500
+  res.status(statusCode).json({
+    message: err.message || 'Something went wrong' // send error message
+  });
 }
 
 module.exports ={notFoundErrorHandelar,errorMiddleware}
