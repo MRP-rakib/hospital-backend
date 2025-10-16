@@ -6,6 +6,6 @@ PORT=process.env.PORT||5252
 const server = http.createServer(app)
 
 server.listen(PORT,()=>{
-    console.log(`server is listening on port:${PORT}`);
+    console.log(`server is listening on http://localhost:${PORT}`);
     
 })
