@@ -7,7 +7,7 @@ const connectDB = require('../config/db')
 const { notFoundErrorHandelar, errorMiddleware } = require('../middlewares/errorMiddleware')
 const authRoute = require('../routers/authRoute')
 connectDB()
-app.use([cors(),morgan('dev'), express.json()])
+app.use([morgan('dev'), cors(), express.json()])
 
 
 app.get('/',(_req,res)=>{
