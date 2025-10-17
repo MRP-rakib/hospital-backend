@@ -1,7 +1,7 @@
-const adminSignupController = require('../controllers/authAdminController')
+const adminSignupController = require("../controllers/authAdminController");
 
-const route = require('express').Router()
+const route = require("express").Router();
 
-route.post('/admin',adminSignupController)
+route.post("/admin/signup", adminSignupController);
 
-module.exports = route
+module.exports = route;

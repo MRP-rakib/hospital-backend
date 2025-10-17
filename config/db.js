@@ -1,14 +1,13 @@
-const mongoose = require('mongoose')
+require('dotenv').config()
+const mongoose = require("mongoose");
 
-const connectDB =async()=>{
-   try {
-       await mongoose.connect('mongodb://127.0.0.1:27017/hospital-backend')
-       console.log('mongoose connected');
-       
-   } catch (error) {
+const connectDB = async () => {
+  try {
+    await mongoose.connect(`${process.env.MONGOOSE}/hospital-backend`);
+    console.log("mongoose connected");
+  } catch (error) {
     console.log(error);
-    
-   }
-}
+  }
+};
 
-module.exports = connectDB
+module.exports = connectDB;
