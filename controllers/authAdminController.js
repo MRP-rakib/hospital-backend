@@ -13,7 +13,7 @@ const adminSignupController = async (req, res, next) => {
     // existinguser checking
     const existingUser = await User.findOne({ email });
     if (existingUser)
-      return res.status(400).json({ message: "email already registered" });
+      return res.status(400).json({ message: "user already registered" });
     // check admin
     const existingAdmin = await User.findOne({ role: "admin" });
     if (existingAdmin)
