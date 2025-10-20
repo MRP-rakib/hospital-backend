@@ -1,5 +1,5 @@
 require("dotenv").config();
-const User = require("../models/userSchema");
+const User = require("../models/authSchema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const createUser = async (userData) => {
@@ -11,6 +11,7 @@ const createUser = async (userData) => {
       lastname: userData.lastname,
       email: userData.email,
       password: hashPass,
+      role:userData.role
     });
     return await newUser.save();
   } catch (error) {
@@ -18,10 +19,11 @@ const createUser = async (userData) => {
   }
 };
 
-const loginUser = async ({ email, password, remembar = false }) => {
+const loginUser = async ({ email, password, remembar = false,role }) => {
   try {
     const user = await User.findOne({ email });
     if (!user) throw new Error("invalid credentials");
+    if(user.role!==role) throw new Error('invalid credential')
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("invalid credentials");
     const expiresIn = remembar ? "30d" : "1d";
@@ -38,19 +40,21 @@ const loginUser = async ({ email, password, remembar = false }) => {
   }
 };
 
-const getUser = async (id) => {
+const getUser = async (id,role) => {
   try {
-    const userId = await User.findById(id).select("-password");
-    if (!userId) throw new Error("user not found");
-    return userId;
+    const user = await User.findById(id).select("-password");
+    if (!user|| user.role !== role) throw new Error("user not found");
+    return user;
   } catch (error) {
     throw error;
   }
 };
-const deleteUser = async ({ id, password }) => {
+const deleteUser = async ({ id, password,role }) => {
   try {
     if (!password) throw new Error("password is required");
     const user = await User.findById(id);
+    if(user.role !== role) throw new Error("invalide route");
+    
     const ismatch = await bcrypt.compare(password, user.password);
     if (!ismatch) throw new Error("password is wrong");
 
