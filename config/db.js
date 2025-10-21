@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(`${process.env.MONGOOSE}/hospital-backend`);
+    await mongoose.connect(`${process.env.MONGOOSE}`);
     console.log("mongoose connected");
   } catch (error) {
     console.log(error);

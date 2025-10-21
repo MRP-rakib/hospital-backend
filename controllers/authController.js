@@ -52,7 +52,7 @@ const userLoginController = async (req, res, next) => {
   try {
     const { email, password, remembar } = req.body;
     const role = req.baseUrl.includes("/admin") ? "admin" : "patient";
-    const { user, token, expiresIn } = await loginUser({
+    const { token, expiresIn } = await loginUser({
       email,
       password,
       remembar,
@@ -65,7 +65,6 @@ const userLoginController = async (req, res, next) => {
     });
     res.status(200).json({
       message: "login successful",
-      user,
       token,
       expiresIn,
     });
