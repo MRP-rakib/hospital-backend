@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
-
+const cors = require('cors')
 const connectDB = require("../config/db");
 const {
   notFoundErrorHandelar,
@@ -10,7 +10,11 @@ const {
 } = require("../middlewares/errorMiddleware");
 const authRouter = require("../routers/authRouter");
 connectDB();
-app.use([morgan("dev"), express.json()]);
+app.use([morgan("dev"),cors({
+  origin:'*',
+  methods:['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  credentials:true
+}), express.json()]);
 
 app.get("/", (_req, res) => {
   res.status(200).json({ message: "System is ok" });
