@@ -14,7 +14,7 @@ const userSignupController = async (req, res, next) => {
 
     if (!firstname || !lastname || !email || !password)
       return res.status(400).json({ message: "All fields are required" });
-
+    if(password.length <6 || password.length>16) return res.status(400).json({message:'Password must be 6-16 characters'})
     if (!validator.isEmail(email))
       return res.status(400).json({ message: "invalid email format" });
     const role = req.baseUrl.includes("/admin") ? "admin" : "patient";
