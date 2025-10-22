@@ -58,11 +58,7 @@ const userLoginController = async (req, res, next) => {
       remembar,
       role,
     });
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: remembar ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000,
-    });
+    
     res.status(200).json({
       message: "login successful",
       token,

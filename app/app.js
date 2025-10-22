@@ -13,7 +13,7 @@ connectDB();
 app.use([morgan("dev"),cors({
   origin:'*',
   methods:['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-  credentials:true
+ 
 }), express.json()]);
 
 app.get("/", (_req, res) => {
