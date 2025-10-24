@@ -4,6 +4,7 @@ const {
   loginUser,
   getUser,
   deleteUser,
+  changePassword,
 } = require("../services/authServices");
 const validator = require("validator");
 const User = require("../models/authSchema");
@@ -51,6 +52,8 @@ const userSignupController = async (req, res, next) => {
 const userLoginController = async (req, res, next) => {
   try {
     const { email, password, remembar } = req.body;
+    if(!email|| !password) return res.status(400).json({message:'email and Password are required'})
+
     const role = req.baseUrl.includes("/admin") ? "admin" : "patient";
     const { token, expiresIn } = await loginUser({
       email,
@@ -100,9 +103,25 @@ const deleteUserController = async (req, res, next) => {
   }
 };
 
+const changePasswordController = async(req,res,next)=>{
+  try {
+    const userId = req.user.id
+    const role = req.baseUrl.includes('/admin')?'admin':'patient'
+    const {password,newpassword} = req.body
+    const message = await changePassword({id:userId,password,newpassword,role})
+   res.status(200).json({message:message})
+  } catch (error) {
+    error.status = 400
+    console.log(error);
+    
+    next(error) 
+  }
+}
+
 module.exports = {
   userSignupController,
   userLoginController,
   getUserController,
   deleteUserController,
+  changePasswordController
 };

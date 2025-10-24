@@ -53,7 +53,7 @@ const deleteUser = async ({ id, password,role }) => {
   try {
     if (!password) throw new Error("password is required");
     const user = await User.findById(id);
-    if(user.role !== role) throw new Error("invalide route");
+    if(user.role !== role) throw new Error("invalid route");
     
     const ismatch = await bcrypt.compare(password, user.password);
     if (!ismatch) throw new Error("password is wrong");
@@ -64,4 +64,23 @@ const deleteUser = async ({ id, password,role }) => {
     throw error;
   }
 };
-module.exports = { createUser, loginUser, getUser, deleteUser };
+
+const changePassword=async({id,password,newpassword,role})=>{
+  try {
+    if(!password) throw new Error("Current password is required");
+    if(!newpassword) throw new Error("New Password is required");
+    const user = await User.findById(id)
+    if (user.role!==role) throw new Error("invalid route");
+    const ismatch = await bcrypt.compare(password,user.password)
+    if(!ismatch) throw new Error('password is wrong')
+    if(password === newpassword) throw new Error("old password and new password cannot be same")
+      const salt = await bcrypt.genSalt(10)
+      const hashpassword = await bcrypt.hash(newpassword,salt)
+      user.password = hashpassword
+      await user.save()
+      return 'password change successfull'
+    } catch (error) {
+    throw error
+  }
+}
+module.exports = { createUser, loginUser, getUser, deleteUser, changePassword};
