@@ -86,9 +86,12 @@ const changePassword=async({id,password,newpassword,role})=>{
 
 const changeUserInfo = async({id,role,email,firstname,lastname})=>{
   try {
+    if (!email?.trim() && !firstname?.trim() && !lastname?.trim()) {
+    throw new Error("All fields are required");
+}
     const user = await User.findById(id)
-    if(!user.role === role) throw new Error('invalid route')
-    if(user.email===''||user.firstname===''||user.lastname==='') throw new Error("All field are required");
+    if(user.role !== role) throw new Error('invalid route')
+    
       
     await User.findByIdAndUpdate(id,{email,firstname,lastname},{new:true,runValidators:true})
     return 'user info change successfull'
