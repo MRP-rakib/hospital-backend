@@ -5,6 +5,7 @@ const {
   getUser,
   deleteUser,
   changePassword,
+  changeUserInfo,
 } = require("../services/authServices");
 const validator = require("validator");
 const User = require("../models/authSchema");
@@ -117,11 +118,26 @@ const changePasswordController = async(req,res,next)=>{
     next(error) 
   }
 }
+const changeUserInfoController=async(req,res,next)=>{
+  try {
+    const userId = req.user.id
+    const role = req.baseUrl.includes('/admin')?'admin':'patient'
+    const {email,firstname,lastname} = req.body
+    const message = await changeUserInfo({id:userId,email,role,firstname,lastname})
+    res.status(200).json({message:message})
+  } catch (error) {
+    error.status=400
+    console.log(error)
+    next(error)
+    
+  }
+}
 
 module.exports = {
   userSignupController,
   userLoginController,
   getUserController,
   deleteUserController,
-  changePasswordController
+  changePasswordController,
+  changeUserInfoController
 };

@@ -10,10 +10,10 @@ const {
 } = require("../middlewares/errorMiddleware");
 const authRouter = require("../routers/authRouter");
 connectDB();
-app.use([morgan("dev"),cors({
-  origin:'*',
-  methods:['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
- 
+app.use([morgan("dev"), cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+
 }), express.json()]);
 
 app.get("/", (_req, res) => {

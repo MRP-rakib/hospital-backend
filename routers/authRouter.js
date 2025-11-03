@@ -4,6 +4,7 @@ const {
   getUserController,
   deleteUserController,
   changePasswordController,
+  changeUserInfoController
 
 } = require("../controllers/authController");
 const authenticJWT = require("../middlewares/authMiddleware");
@@ -15,5 +16,6 @@ router.post("/login", userLoginController);
 router.get("/profile", authenticJWT, getUserController);
 router.delete("/profile", authenticJWT, deleteUserController);
 router.patch("/profile", authenticJWT, changePasswordController);
+router.put('/profile',authenticJWT, changeUserInfoController)
 
 module.exports = router;

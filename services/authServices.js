@@ -83,4 +83,17 @@ const changePassword=async({id,password,newpassword,role})=>{
     throw error
   }
 }
-module.exports = { createUser, loginUser, getUser, deleteUser, changePassword};
+
+const changeUserInfo = async({id,role,email,firstname,lastname})=>{
+  try {
+    const user = await User.findById(id)
+    if(!user.role === role) throw new Error('invalid route')
+    if(user.email===''||user.firstname===''||user.lastname==='') throw new Error("All field are required");
+      
+    await User.findByIdAndUpdate(id,{email,firstname,lastname},{new:true,runValidators:true})
+    return 'user info change successfull'
+  } catch (error) {
+    throw error
+  }
+}
+module.exports = { createUser, loginUser, getUser, deleteUser, changePassword,changeUserInfo};
