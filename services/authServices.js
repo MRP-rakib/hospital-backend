@@ -99,4 +99,19 @@ const changeUserInfo = async({id,role,email,firstname,lastname})=>{
     throw error
   }
 }
-module.exports = { createUser, loginUser, getUser, deleteUser, changePassword,changeUserInfo};
+const uploadImage = async({id,role,file})=>{
+  try {
+    if(!file) throw new Error("no file uploaded");
+    const user = await User.findById(id)
+    if(user.role !==role) throw new Error('invalide route')
+  
+
+    await User.findByIdAndUpdate(id,{image:file.path},{new:true})
+    return 'image upload sussecfull'
+    
+    
+  } catch (error) {
+    throw error
+  }
+}
+module.exports = { createUser, loginUser, getUser, deleteUser, changePassword,changeUserInfo,uploadImage};

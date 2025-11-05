@@ -6,6 +6,7 @@ const {
   deleteUser,
   changePassword,
   changeUserInfo,
+  uploadImage
 } = require("../services/authServices");
 const validator = require("validator");
 const User = require("../models/authSchema");
@@ -133,11 +134,27 @@ const changeUserInfoController=async(req,res,next)=>{
   }
 }
 
+const uploadImageController=async(req,res,next)=>{
+  try {
+    const userId = req.user.id
+    const role = req.baseUrl.includes('/admin')?'admin':'patient'
+    const file = req.file
+    await uploadImage({id:userId,role,file})
+    res.status(200).json({message:'upload successfull'})
+  } catch (error) {
+    error.status = 400
+    console.log(error)
+    next(error)
+    
+  }
+}
+
 module.exports = {
   userSignupController,
   userLoginController,
   getUserController,
   deleteUserController,
   changePasswordController,
-  changeUserInfoController
+  changeUserInfoController,
+  uploadImageController
 };
