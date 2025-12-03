@@ -1,4 +1,4 @@
-const { CreateUser, LoginUser, GetProfile } = require("../services/authservices")
+const { CreateUser, LoginUser, GetProfile } = require("../services/authServices")
 const JWT = require('jsonwebtoken')
 const { genarateAccessToken } = require("../utils/token")
 const uploadCloudinary = require("../utils/uploadCoudinary")
