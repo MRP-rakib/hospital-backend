@@ -1,7 +1,7 @@
 require('dotenv').config()
 const app = require('./app/app')
 const http = require('http')
-PORT=process.env.PORT||5252
+const PORT=process.env.PORT||5252
 
 const server = http.createServer(app)
 

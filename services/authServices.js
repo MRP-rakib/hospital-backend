@@ -1,117 +1,60 @@
-require("dotenv").config();
-const User = require("../models/authSchema");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const createUser = async (userData) => {
-  try {
-    const salt = await bcrypt.genSalt(10);
-    const hashPass = await bcrypt.hash(userData.password, salt);
-    const newUser = new User({
-      firstname: userData.firstname,
-      lastname: userData.lastname,
-      email: userData.email,
-      password: hashPass,
-      role:userData.role
-    });
-    return await newUser.save();
-  } catch (error) {
-    throw error;
-  }
-};
+const User = require('../models/authSchema')
+const validator = require('validator')
+const bcrypt = require('bcrypt')
+const { genarateAccessToken, genarateRefreshToken } = require('../utils/token')
+const CreateUser=async(userData,role)=>{
+    try {
+        const {name,email,password} = userData
+        if (!name||!email||!password) throw new Error("All field are required")
+        if(!validator.isEmail(email)) throw new Error('email invalid')
+        if(password.length < 6 || password.length > 16) throw new Error("password must be 6-16 character")
+        if(role === 'admin'){
+            const existentAdmin = await User.findOne({role:'admin'})
+            if (existentAdmin) throw new Error("Admin allready register")
+        }
+        const existentEmail = await User.findOne({email})
+               if(existentEmail) throw new Error("email allready register")
 
-const loginUser = async ({ email, password, remembar = false,role }) => {
-  try {
-    const user = await User.findOne({ email });
-    if (!user) throw new Error("invalid credentials");
-    if(user.role!==role) throw new Error('invalid credential')
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw new Error("invalid credentials");
-    const expiresIn = remembar ? "30d" : "1d";
-    const token = jwt.sign(
-      { id: user.id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn }
-    );
-    const userObj = user.toObject();
-    delete userObj.password;
-    return { user: userObj, token, expiresIn };
-  } catch (error) {
-    throw error;
-  }
-};
+        const user = new User({
+            name:name,
+            email:email,
+            password:password,
+            role:role,
 
-const getUser = async (id,role) => {
-  try {
-    const user = await User.findById(id).select("-password");
-    if (!user|| user.role !== role) throw new Error("user not found");
-    return user;
-  } catch (error) {
-    throw error;
-  }
-};
-const deleteUser = async ({ id, password,role }) => {
-  try {
-    if (!password) throw new Error("password is required");
-    const user = await User.findById(id);
-    if(user.role !== role) throw new Error("invalid route");
-    
-    const ismatch = await bcrypt.compare(password, user.password);
-    if (!ismatch) throw new Error("password is wrong");
-
-    await User.findByIdAndDelete(user);
-    return "user delete succesfully";
-  } catch (error) {
-    throw error;
-  }
-};
-
-const changePassword=async({id,password,newpassword,role})=>{
-  try {
-    if(!password) throw new Error("Current password is required");
-    if(!newpassword) throw new Error("New Password is required");
-    const user = await User.findById(id)
-    if (user.role!==role) throw new Error("invalid route");
-    const ismatch = await bcrypt.compare(password,user.password)
-    if(!ismatch) throw new Error('password is wrong')
-    if(password === newpassword) throw new Error("old password and new password cannot be same")
-      const salt = await bcrypt.genSalt(10)
-      const hashpassword = await bcrypt.hash(newpassword,salt)
-      user.password = hashpassword
-      await user.save()
-      return 'password change successfull'
+        })
+         return await user.save()        
     } catch (error) {
-    throw error
-  }
+        throw error
+    }
 }
 
-const changeUserInfo = async({id,role,email,firstname,lastname})=>{
-  try {
-    if (!email?.trim() && !firstname?.trim() && !lastname?.trim()) {
-    throw new Error("All fields are required");
+const LoginUser=async(userData,role)=>{
+    try {
+        const {email,password} = userData
+        if(!email||!password) throw new Error("Email and Password required")
+        const user = await User.findOne({email})
+    if(!user||user.role !==role)  throw new Error("invalid credential")
+        const checkPass = await bcrypt.compare(password,user.password)
+        if(!checkPass) throw new Error("invalid credential");
+        const accessToken = genarateAccessToken({id:user.id,role:user.role})
+        const refreshToken = genarateRefreshToken({id:user.id})
+        return {accessToken,refreshToken}
+    } catch (error) {
+        throw error
+    }
 }
-    const user = await User.findById(id)
-    if(user.role !== role) throw new Error('invalid route')
-    
-      
-    await User.findByIdAndUpdate(id,{email,firstname,lastname},{new:true,runValidators:true})
-    return 'user info change successfull'
-  } catch (error) {
-    throw error
-  }
-}
-const uploadImage = async({id,role,file})=>{
-  try {
-    if(!file) throw new Error("no file uploaded");
-    const user = await User.findById(id)
-    if(user.role !==role) throw new Error('invalide route')
-  
 
-    await User.findByIdAndUpdate(id,{image:file.path},{new:true})
-    return 'image upload sussecfull'
-    
-    
-  } catch (error) {
-    throw error
-  }
+const GetProfile =async(userId,role)=>{
+    try {
+
+        const user = await User.findById(userId).select('-password')
+        if(!user||user.role!==role) throw new Error("user not available");
+        
+        return {user}
+        
+        
+    } catch (error) {
+        throw error
+    }
 }
-module.exports = { createUser, loginUser, getUser, deleteUser, changePassword,changeUserInfo,uploadImage};
+module.exports = {CreateUser,LoginUser,GetProfile}

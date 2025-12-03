@@ -1,21 +1,19 @@
-require("dotenv").config();
-const JWT = require("jsonwebtoken");
+const JWT = require('jsonwebtoken')
+const authMiddleware= async (req,_res,next)=>{
+         try {
+            const authHeader = req.headers['authorization']
+            if(!authHeader) throw new Error("token is not available 1");
+            const token = authHeader.split(' ')[1]
+            if(!token) throw new Error("token is not available 2");
+            const decoded = JWT.verify(token,process.env.ACCESS_TOKEN)
+            req.user = decoded
+            next()
+           
+            
+         } catch (error) {
+            error.status=401
+            next(error)
+         }
+}
 
-const authenticJWT = async (req, res, next) => {
-  try {
-    const header = req.headers.authorization;
-    if (!header) return res.status(401).json({ message: "no token provided" });
-    const token = header.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "token missing" });
-    const decoded = JWT.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    error.status = 403;
-    console.log(error);
-
-    next(error);
-  }
-};
-
-module.exports = authenticJWT;
+module.exports = authMiddleware
