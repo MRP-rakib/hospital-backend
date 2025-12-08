@@ -1,4 +1,4 @@
-const { CreateUser, LoginUser, GetProfile } = require("../services/authServices")
+const { CreateUser, LoginUser, GetProfile, UpdateUser } = require("../services/authServices")
 const JWT = require('jsonwebtoken')
 const { genarateAccessToken } = require("../utils/token")
 const uploadCloudinary = require("../utils/uploadCoudinary")
@@ -83,4 +83,20 @@ const uploadProfileImageController = async (req, res, next) => {
         next(error)
     }
 }
-module.exports = { CreateUserController, LoginUserController, GetProfileController, RefreshTokenController, uploadProfileImageController }
+
+const UpdateUserDataController=async(req,res,next)=>{
+    try {
+       const id = req.params.id
+       const role = req.role
+       const userData = req.body
+       await UpdateUser(id,userData,role)
+       return res.status(200).json({message:'Update done'})
+
+    } catch (error) {
+        error.status=400
+        next(error)
+    }
+}
+module.exports = { CreateUserController, LoginUserController,
+     GetProfileController,
+      RefreshTokenController, uploadProfileImageController,UpdateUserDataController }
