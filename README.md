@@ -10,7 +10,7 @@ A simple and secure system for managing hospital appointments with user authenti
 - Password Hashing with Bcrypt
 - Protected Routes
 
-## API URL = hospital-backend-fgmv.onrender.com/
+## API URL = https://hospital-backend-fgmv.onrender.com
 
 ## Authentication API Routes
 | Method  | Route                        | Description                     | Role  |
