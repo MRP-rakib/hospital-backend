@@ -1,4 +1,4 @@
-const { CreateUser, LoginUser, GetProfile, UpdateUser, UpdatePass } = require("../services/authServices")
+const { CreateUser, LoginUser, GetProfile, UpdateUser, UpdatePass, DeleteUser } = require("../services/authServices")
 const JWT = require('jsonwebtoken')
 const { genarateAccessToken } = require("../utils/token")
 const uploadCloudinary = require("../utils/uploadCoudinary")
@@ -110,6 +110,19 @@ const UpdatePassController = async(req,res,next)=>{
         next(error)
     }
 }
+const DeleteUserController = async(req,res,next)=>{
+    try {
+        const id = req.params.id
+        const role = req.role
+        const {password} = req.body
+        await DeleteUser(id,password,role)
+        return res.status(200).json({message:'user delete successful'})
+    } catch (error) {
+        error.status =400
+        next(error)
+    }
+}
 module.exports = { CreateUserController, LoginUserController,
      GetProfileController,
-      RefreshTokenController, uploadProfileImageController,UpdateUserDataController,UpdatePassController}
+      RefreshTokenController, uploadProfileImageController,
+      UpdateUserDataController,UpdatePassController,DeleteUserController}

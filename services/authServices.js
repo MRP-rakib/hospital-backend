@@ -97,4 +97,17 @@ const UpdatePass = async(id,password,newpass,role)=>{
         throw error
     }
 }
-module.exports = {CreateUser,LoginUser,GetProfile,UpdateUser,UpdatePass}
+const DeleteUser = async(id,password,role)=>{
+    try {
+        if(!password) throw new Error("password must need");
+        const user = await User.findById(id)
+        if(!user) throw new Error("user not found");
+        if(user.role !==role) throw new Error("invalid route");
+        const checkpass = await bcrypt.compare(password,user.password)
+        if(!checkpass) throw new Error("password is wrong")
+        return await User.findByIdAndDelete(id)     
+    } catch (error) {
+        throw error
+    }
+}
+module.exports = {CreateUser,LoginUser,GetProfile,UpdateUser,UpdatePass,DeleteUser}
