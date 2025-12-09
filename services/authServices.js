@@ -65,6 +65,8 @@ const UpdateUser = async(id,userData,role)=>{
         if ((user.name === name) || (user.email === email)) {
             throw new Error("New values are the same as old values");
         }
+        if (User.email === email) throw new Error("email already registerd");
+        
         const updateData ={}
         if(name) updateData.name = name
         if(email) updateData.email = email
@@ -75,4 +77,24 @@ const UpdateUser = async(id,userData,role)=>{
         throw error
     }
 }
-module.exports = {CreateUser,LoginUser,GetProfile,UpdateUser}
+
+const UpdatePass = async(id,password,newpass,role)=>{
+    try {
+        if(!password||!newpass) throw new Error("all field are required");
+        const user = await User.findById(id)
+        if(!user) throw new Error("user not found");
+        if(user.role !==role) throw new Error("invalid route")
+        const checkpass = await bcrypt.compare(password,user.password)
+        if(!checkpass) throw new Error("invalid password");
+        const isSame = await bcrypt.compare(newpass,user.password)
+        if(isSame) throw new Error("old password and new pass can not be same");
+        
+        user.password = newpass
+        return await user.save()
+        
+           
+    } catch (error) {
+        throw error
+    }
+}
+module.exports = {CreateUser,LoginUser,GetProfile,UpdateUser,UpdatePass}

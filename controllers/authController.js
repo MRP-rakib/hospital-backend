@@ -1,4 +1,4 @@
-const { CreateUser, LoginUser, GetProfile, UpdateUser } = require("../services/authServices")
+const { CreateUser, LoginUser, GetProfile, UpdateUser, UpdatePass } = require("../services/authServices")
 const JWT = require('jsonwebtoken')
 const { genarateAccessToken } = require("../utils/token")
 const uploadCloudinary = require("../utils/uploadCoudinary")
@@ -97,6 +97,19 @@ const UpdateUserDataController=async(req,res,next)=>{
         next(error)
     }
 }
+
+const UpdatePassController = async(req,res,next)=>{
+    try {
+        const id = req.params.id
+        const role = req.role
+        const {password,newpass} = req.body
+        await UpdatePass(id,password,newpass,role)
+        res.status(200).json({message:'password change done'})
+    } catch (error) {
+        error.status = 400
+        next(error)
+    }
+}
 module.exports = { CreateUserController, LoginUserController,
      GetProfileController,
-      RefreshTokenController, uploadProfileImageController,UpdateUserDataController }
+      RefreshTokenController, uploadProfileImageController,UpdateUserDataController,UpdatePassController}
