@@ -2,6 +2,7 @@ const User = require('../models/authSchema')
 const validator = require('validator')
 const bcrypt = require('bcrypt')
 const { genarateAccessToken, genarateRefreshToken } = require('../utils/token')
+const uploadCloudinary = require('../utils/uploadCoudinary')
 const CreateUser=async(userData,role)=>{
     try {
         const {name,email,password} = userData
@@ -110,4 +111,6 @@ const DeleteUser = async(id,password,role)=>{
         throw error
     }
 }
+
+
 module.exports = {CreateUser,LoginUser,GetProfile,UpdateUser,UpdatePass,DeleteUser}

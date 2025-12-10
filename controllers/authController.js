@@ -1,15 +1,12 @@
 const { CreateUser, LoginUser, GetProfile, UpdateUser, UpdatePass, DeleteUser } = require("../services/authServices")
 const JWT = require('jsonwebtoken')
 const { genarateAccessToken } = require("../utils/token")
-const uploadCloudinary = require("../utils/uploadCoudinary")
-const User = require('../models/authSchema')
-const cloudinary = require("../config/cloudinary")
+const { UploadImage } = require("../services/imageUploader")
 const CreateUserController = async (req, res, next) => {
     try {
         const { name, email, password } = req.body
         const role = req.role
         await CreateUser({ name, email, password }, role)
-
         return res.status(201).json({ message: 'Account Create Done' })
     } catch (error) {
         error.status = 400
@@ -60,23 +57,24 @@ const RefreshTokenController = async (req, res, next) => {
 }
 const uploadProfileImageController = async (req, res, next) => {
     try {
+        const id = req.params.id
         const role = req.role
-        const user = await User.findById(req.user.id)
-        if (user.role !== role) throw new Error("invalid route");
-        if (user.avatar.url && user.avatar.publicId) {
-            await cloudinary.uploader.destroy(user.avatar.publicId)
-        }
-        const image = await uploadCloudinary(req.file.buffer, 'avatar')
-        if (!image || !image.secure_url) {
-            return res.status(500).json({ message: 'Cloudinary upload failed' })
-        }
+        const buffer = req.file.buffer
+        await UploadImage(role, buffer, id)
+        return res.status(201).json({ message: 'image uploaded' })
+    } catch (error) {
+        error.status = 400
+        next(error)
+    }
+}
 
-        user.avatar = {
-            url: image.secure_url,
-            publicId: image.public_id
-        }
-        await user.save()
-        return res.status(201).json({ message: 'image uploaded', avatar: user.avatar })
+const UpdateUserDataController = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const role = req.role
+        const userData = req.body
+        await UpdateUser(id, userData, role)
+        return res.status(200).json({ message: 'Update done' })
 
     } catch (error) {
         error.status = 400
@@ -84,45 +82,33 @@ const uploadProfileImageController = async (req, res, next) => {
     }
 }
 
-const UpdateUserDataController=async(req,res,next)=>{
-    try {
-       const id = req.params.id
-       const role = req.role
-       const userData = req.body
-       await UpdateUser(id,userData,role)
-       return res.status(200).json({message:'Update done'})
-
-    } catch (error) {
-        error.status=400
-        next(error)
-    }
-}
-
-const UpdatePassController = async(req,res,next)=>{
+const UpdatePassController = async (req, res, next) => {
     try {
         const id = req.params.id
         const role = req.role
-        const {password,newpass} = req.body
-        await UpdatePass(id,password,newpass,role)
-        res.status(200).json({message:'password change done'})
+        const { password, newpass } = req.body
+        await UpdatePass(id, password, newpass, role)
+        res.status(200).json({ message: 'password change done' })
     } catch (error) {
         error.status = 400
         next(error)
     }
 }
-const DeleteUserController = async(req,res,next)=>{
+const DeleteUserController = async (req, res, next) => {
     try {
         const id = req.params.id
         const role = req.role
-        const {password} = req.body
-        await DeleteUser(id,password,role)
-        return res.status(200).json({message:'user delete successful'})
+        const { password } = req.body
+        await DeleteUser(id, password, role)
+        return res.status(200).json({ message: 'user delete successful' })
     } catch (error) {
-        error.status =400
+        error.status = 400
         next(error)
     }
 }
-module.exports = { CreateUserController, LoginUserController,
-     GetProfileController,
-      RefreshTokenController, uploadProfileImageController,
-      UpdateUserDataController,UpdatePassController,DeleteUserController}
+module.exports = {
+    CreateUserController, LoginUserController,
+    GetProfileController,
+    RefreshTokenController, uploadProfileImageController,
+    UpdateUserDataController, UpdatePassController, DeleteUserController
+}
