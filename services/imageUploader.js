@@ -22,5 +22,18 @@ const UploadImage = async(role,buffer,id)=>{
         throw error
     }
 }
-
-module.exports = {UploadImage}
+const DeleteImage = async(role,id)=>{
+    try {
+        const user = await User.findById(id)
+        if (user.role !== role) throw new Error("invalid route");
+        if (!user.avatar.url || !user.avatar.publicId) {
+            throw new Error("no image set");
+        }
+        await cloudinary.uploader.destroy(user.avatar.publicId)
+        user.avatar = {url:null,publicId:null}
+        return await user.save()
+    } catch (error) {
+        throw error
+    }
+}
+module.exports = {UploadImage,DeleteImage}

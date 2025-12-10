@@ -1,12 +1,12 @@
 const { CreateUser, LoginUser, GetProfile, UpdateUser, UpdatePass, DeleteUser } = require("../services/authServices")
 const JWT = require('jsonwebtoken')
 const { genarateAccessToken } = require("../utils/token")
-const { UploadImage } = require("../services/imageUploader")
+const { UploadImage, DeleteImage } = require("../services/imageUploader")
 const CreateUserController = async (req, res, next) => {
     try {
-        const { name, email, password } = req.body
+        const { username, email, password } = req.body
         const role = req.role
-        await CreateUser({ name, email, password }, role)
+        await CreateUser({ username, email, password }, role)
         return res.status(201).json({ message: 'Account Create Done' })
     } catch (error) {
         error.status = 400
@@ -67,6 +67,18 @@ const uploadProfileImageController = async (req, res, next) => {
         next(error)
     }
 }
+const DeleteProfileImageController = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const role = req.role
+        // const buffer = req.file.buffer
+        await DeleteImage(role,id)
+        return res.status(200).json({ message: 'image remove done' })
+    } catch (error) {
+        error.status = 400
+        next(error)
+    }
+}
 
 const UpdateUserDataController = async (req, res, next) => {
     try {
@@ -110,5 +122,5 @@ module.exports = {
     CreateUserController, LoginUserController,
     GetProfileController,
     RefreshTokenController, uploadProfileImageController,
-    UpdateUserDataController, UpdatePassController, DeleteUserController
+    UpdateUserDataController, UpdatePassController, DeleteUserController,DeleteProfileImageController
 }

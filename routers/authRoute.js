@@ -1,5 +1,5 @@
 const router = require('express').Router() 
-const { CreateUserController, LoginUserController, GetProfileController, RefreshTokenController, uploadProfileImageController, UpdateUserDataController, UpdatePassController, DeleteUserController } = require('../controllers/authController')
+const { CreateUserController, LoginUserController, GetProfileController, RefreshTokenController, uploadProfileImageController, UpdateUserDataController, UpdatePassController, DeleteUserController, DeleteProfileImageController } = require('../controllers/authController')
 const assignRole = require('../middlewares/assignRole')
 const authMiddleware = require('../middlewares/authMiddleware')
 const upload = require('../middlewares/multer')
@@ -12,5 +12,6 @@ router.patch('/change-password/:id',authMiddleware,assignRole,UpdatePassControll
 router.delete('/delete-account/:id',authMiddleware,assignRole,DeleteUserController)
 router.post('/refresh-token',RefreshTokenController)
 router.put('/upload-image/:id',authMiddleware,assignRole,upload.single('image'),uploadProfileImageController)
+router.delete('/delete-image/:id',authMiddleware,assignRole,DeleteProfileImageController)
 
 module.exports = router
