@@ -93,18 +93,18 @@ const UpdateUser = async(id,userData,role)=>{
     }
 }
 
-const UpdatePass = async(id,password,newpass,role)=>{
+const UpdatePass = async(id,password,newpassword,role)=>{
     try {
-        if(!password||!newpass) throw new Error("all field are required");
+        if(!password||!newpassword) throw new Error("all field are required");
         const user = await User.findById(id)
         if(!user) throw new Error("user not found");
         if(user.role !==role) throw new Error("invalid route")
         const checkpass = await bcrypt.compare(password,user.password)
         if(!checkpass) throw new Error("invalid password");
-        const isSame = await bcrypt.compare(newpass,user.password)
+        const isSame = await bcrypt.compare(newpassword,user.password)
         if(isSame) throw new Error("old password and new pass can not be same");
         
-        user.password = newpass
+        user.password = newpassword
         return await user.save()
         
            

@@ -21,8 +21,15 @@ const LoginUserController = async (req, res, next) => {
         const { accessToken, refreshToken } = await LoginUser({ email, password }, role)
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'lax'
+            secure: true,
+            sameSite: 'lax',
+            maxAge:60*60*1000
+        })
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge:30*60*1000
         })
         return res.status(200).json({ message: 'login successfull', accessToken })
     } catch (error) {
@@ -98,8 +105,8 @@ const UpdatePassController = async (req, res, next) => {
     try {
         const id = req.params.id
         const role = req.role
-        const { password, newpass } = req.body
-        await UpdatePass(id, password, newpass, role)
+        const { password, newpassword } = req.body
+        await UpdatePass(id, password, newpassword, role)
         res.status(200).json({ message: 'password change done' })
     } catch (error) {
         error.status = 400
@@ -112,6 +119,19 @@ const DeleteUserController = async (req, res, next) => {
         const role = req.role
         const { password } = req.body
         await DeleteUser(id, password, role)
+          res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "lax",
+            path: "/",
+        });
+
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "lax",
+            path: "/",
+        });
         return res.status(200).json({ message: 'user delete successful' })
     } catch (error) {
         error.status = 400
