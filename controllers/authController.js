@@ -22,13 +22,13 @@ const LoginUserController = async (req, res, next) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
             maxAge:60*60*1000
         })
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: true,
-            sameSite: 'lax',
+            sameSite: 'none',
             maxAge:30*60*1000
         })
         return res.status(200).json({ message: 'login successfull', accessToken })
@@ -122,14 +122,14 @@ const DeleteUserController = async (req, res, next) => {
           res.clearCookie("accessToken", {
             httpOnly: true,
             secure: true,
-            sameSite: "lax",
+            sameSite: "none",
             path: "/",
         });
 
         res.clearCookie("refreshToken", {
             httpOnly: true,
             secure: true,
-            sameSite: "lax",
+            sameSite: "none",
             path: "/",
         });
         return res.status(200).json({ message: 'user delete successful' })
