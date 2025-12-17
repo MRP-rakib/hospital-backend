@@ -24,16 +24,16 @@ const LoginUserController = async (req, res, next) => {
             secure: true,
             sameSite: 'none',
             maxAge:60*60*1000,
-            domain: 'dashboard-iota-eight-53.vercel.app',
-            path:'/'
+            // domain: 'dashboard-iota-eight-53.vercel.app',
+            // path:'/'
         })
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
             maxAge:30*60*1000,
-            domain: 'dashboard-iota-eight-53.vercel.app',
-            path:'/'
+            // domain: 'dashboard-iota-eight-53.vercel.app',
+            // path:'/'
         })
         return res.status(200).json({ message: 'login successfull', accessToken })
     } catch (error) {
@@ -127,14 +127,14 @@ const DeleteUserController = async (req, res, next) => {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            path: "/",
+            // path: "/",
         });
 
         res.clearCookie("refreshToken", {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            path: "/",
+            // path: "/",
         });
         return res.status(200).json({ message: 'user delete successful' })
     } catch (error) {
