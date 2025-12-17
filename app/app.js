@@ -13,7 +13,7 @@ const {
 connectDB();
 
 app.use([morgan("dev"), cors({
-  origin:'https://dashboard-iota-eight-53.vercel.app/',
+  origin:'https://dashboard-iota-eight-53.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials:true
 
