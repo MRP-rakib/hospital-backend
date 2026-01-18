@@ -24,14 +24,14 @@ const LoginUserController = async (req, res, next) => {
             secure: true,
             sameSite: 'none',
             maxAge:60*60*1000,
-            domain:'dashboard-iota-eight-53.vercel.app'
+            // domain:'dashboard-iota-eight-53.vercel.app'
         })
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
             maxAge:30*60*1000,
-            domain:'dashboard-iota-eight-53.vercel.app'
+            // domain:'dashboard-iota-eight-53.vercel.app'
             
         })
         return res.status(200).json({ message: 'login successfull', accessToken })
