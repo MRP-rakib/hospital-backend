@@ -39,7 +39,7 @@ const LoginUserController = async (req, res, next) => {
             // domain:isProd?'dashboard-iota-eight-53.vercel.app':undefined
             
         })
-        return res.status(200).json({ message: 'login successfull', accessToken })
+        return res.status(200).json({ message: 'login successfull', accessToken ,refreshToken})
     } catch (error) {
         error.status = 400
         next(error)
