@@ -19,19 +19,20 @@ const LoginUserController = async (req, res, next) => {
         const { email, password } = req.body
         const role = req.role
         const { accessToken, refreshToken } = await LoginUser({ email, password }, role)
+        const isProd = process.env.NODE_ENV === 'production'
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            secure: isProd,
+            sameSite: isProd?'node':'lax',
             maxAge:60*60*1000,
-            // domain:'dashboard-iota-eight-53.vercel.app'
+            domain:isProd?'dashboard-iota-eight-53.vercel.app':undefined
         })
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-            maxAge:30*60*1000,
-            // domain:'dashboard-iota-eight-53.vercel.app'
+            secure: isProd,
+            sameSite: isProd?'node':'lax',
+            maxAge:60*60*1000,
+            domain:isProd?'dashboard-iota-eight-53.vercel.app':undefined
             
         })
         return res.status(200).json({ message: 'login successfull', accessToken })
