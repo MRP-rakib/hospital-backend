@@ -59,8 +59,8 @@ const GetProfile =async(userId,role)=>{
 
 const UpdateUser = async(id,userData,role)=>{
     try {
-        const {username,email,location,phone,firstname,lastname,bio,age,gender} = userData
-        if(!username&&!email&&!location&&!phone&&!firstname&&!lastname&&!bio&&!age&&!gender) throw new Error("At least one field is required");
+        const {username,email,address,phone,firstname,lastname,bio,birthday,gender,bloodGroup} = userData
+        if(!username&&!email&&!address&&!phone&&!firstname&&!lastname&&!bio&&!birthday&&!gender&&!bloodGroup) throw new Error("At least one field is required");
         const user = await User.findById(id)
         if (!user) throw new Error("user not found");
         if(user.role !==role) throw new Error("invalid route");
@@ -79,12 +79,13 @@ const UpdateUser = async(id,userData,role)=>{
         if(username) updateData.username = username
         if(email) updateData.email = email
         if(bio) updateData.bio = bio
-        if(location) updateData.location = location
+        if(address) updateData.address = address
         if(phone) updateData.phone = phone
-        if(age) updateData.age = age
+        if(birthday) updateData.birthday = birthday
         if(firstname) updateData.firstname = firstname
         if(lastname) updateData.lastname = lastname
         if(gender) updateData.gender = gender
+        if(bloodGroup) updateData.bloodGroup = bloodGroup
         const updateUser = await User.findByIdAndUpdate(id,updateData,{new:true})    
         return updateUser
         
