@@ -10,7 +10,7 @@ A simple and secure system for managing hospital appointments with user authenti
 - Password Hashing with Bcrypt
 - Protected Routes
 
-## API URL = https://hospital-backend-fgmv.onrender.com
+## API URL = https://hospital-backend-ghsn.onrender.com
 
 ## Authentication API Routes
 | Method  | Route                        | Description                     | Role  |
@@ -29,10 +29,10 @@ A simple and secure system for managing hospital appointments with user authenti
 | DELETE  | /api/auth/user/delete-account/:id    | Delete account                  | User  |
 | POST    | /api/auth/admin/refresh-token | Refresh JWT token               | Admin|
 | POST    | /api/auth//user/refresh-token  | Refresh JWT token               | User |
-| PUT    | /api/auth/admin/upload-image  | Upload profile image            | Admin|
-| PUT    | /api/auth/user/upload-image   | Upload profile image            | User |
-| DELETE    | /api/auth/admin/delete-image  | delete profile image            | Admin|
-| DELETE    | /api/auth/user/delete-image   | delete profile image            | User |
+| PUT    | /api/auth/admin/upload-image/:id  | Upload profile image            | Admin|
+| PUT    | /api/auth/user/upload-image/:id   | Upload profile image            | User |
+| DELETE    | /api/auth/admin/delete-image/:id  | delete profile image            | Admin|
+| DELETE    | /api/auth/user/delete-image/:id   | delete profile image            | User |
 
 # 1. Repository clone
 git clone https://github.com/MRP-rakib/hospital-backend.git
