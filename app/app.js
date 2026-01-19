@@ -12,7 +12,7 @@ const {
 } = require("../middlewares/errorMiddleware");
 connectDB();
 app.use([morgan("dev"), cors({
-  origin:['http://localhost:3000','https://dashboard-iota-eight-53.vercel.app'],
+  origin:['http://localhost:3000','https://dashboard-iota-eight-53.vercel.app','https://hospital-landing-page-psi.vercel.app/'],
   methods: ["GET", "POST", "PUT", "PATCH" , "DELETE"],
   credentials:true
 }),cookieParser(), express.json()]);
